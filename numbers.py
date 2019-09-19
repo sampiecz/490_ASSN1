@@ -12,6 +12,9 @@ class Number:
     lines = []
     size = 0
 
+    def __init__(self, lines):
+        self.lines = lines
+
     def add_line(self, line):
         self.lines.append(line)
 
@@ -27,19 +30,17 @@ class Number:
 
 numberContainer = NumberContainer()
 
-for line in testimages.read().split("\n"):
-    if(line == blank):
-        number = False
-    elif(line != blank and number == False):
-        number = True
-        new_number = Number()
-        new_number.add_line(line)
-    elif(line != blank and number == True):
-        new_number.add_line(line)
-        number = True
-    elif(line == blank and number == True):
-        numberContainer.numbers.append(new_number)
-        number = False
+lines = []
+count = 0
 
-for number in numberContainer.numbers:
-    print(count(number.lines))
+for line in testimages.read().split("\n"):
+    if count != 28:
+        lines.append(line)
+        count += 1
+    else:
+        instance = Number(lines)
+        numberContainer.add_number(instance)
+        lines = []
+        count = 0
+
+numberContainer.numbers[2].print_self()
