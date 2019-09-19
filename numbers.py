@@ -1,12 +1,9 @@
-testimages = open("testimages", "r+")
-blank = "                            "
-number = False
-
 class NumberContainer:
     numbers = []
 
     def add_number(self, number):
         self.numbers.append(number)
+
 
 class Number:
     lines = []
@@ -15,8 +12,10 @@ class Number:
     def __init__(self, lines):
         self.lines = lines
 
+
     def add_line(self, line):
         self.lines.append(line)
+
 
     def count_grid(self):
         for line in self.lines:
@@ -24,12 +23,15 @@ class Number:
                 self.size += 1
         print(self.size)
                 
+
     def print_self(self):
         for line in self.lines:
             print(line)
 
-numberContainer = NumberContainer()
 
+# Try out the classes / read data
+testimages = open("testimages", "r+")
+numberContainer = NumberContainer()
 lines = []
 count = 0
 
