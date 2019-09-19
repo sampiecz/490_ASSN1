@@ -12,37 +12,25 @@ class Number:
     def __init__(self, lines):
         self.lines = lines
 
-
-    def add_line(self, line):
-        self.lines.append(line)
-
-
-    def count_grid(self):
-        for line in self.lines:
-            for character in line:
-                self.size += 1
-        print(self.size)
-                
-
     def print_self(self):
         for line in self.lines:
             print(line)
 
 
 # Try out the classes / read data
-testimages = open("testimages", "r+")
+testimages = open("testimages")
 numberContainer = NumberContainer()
-lines = []
+number = []
 count = 0
 
 for line in testimages.read().split("\n"):
-    if count != 28:
-        lines.append(line)
+    if count <= 27:
+        number.append(line)
         count += 1
     else:
-        instance = Number(lines)
+        instance = Number(number)
         numberContainer.add_number(instance)
-        lines = []
-        count = 0
+        number = []
+        count = 1
 
-numberContainer.numbers[2].print_self()
+numberContainer.numbers[-1].print_self()
