@@ -31,16 +31,18 @@ class Number:
 
     def generate_features(self):
         count = 0
-        for character in self.lines:
-            if character == " ":
-                features.update({count: 0})
-            elif character == "#":
-                features.update({count: 1})
-            elif character == "+":
-                features.update({count: 1})
+        for line in self.lines:
+            for character in line:
+                if character == " ":
+                    self.features.update({count: 0})
+                elif character == "#":
+                    self.features.update({count: 1})
+                elif character == "+":
+                    self.features.update({count: 1})
+                count += 1
 
     def size(self):
-        self.size = len(self.features.items()) 
+        self.size = len(self.features) 
         return self.size
 
 
@@ -62,3 +64,5 @@ for line in testimages.read().split("\n"):
         count = 1
 
 numberContainer.numbers[-9].print_self()
+numberContainer.numbers[-9].generate_features()
+print(numberContainer.numbers[-9].features)
