@@ -101,24 +101,22 @@ def main():
     # loop through numbers, then loop through their features, for each feature, if it 
     # is a 1, then we need to let weights know to increment current value at that index in weights grid
     for number in numberContainer.numbers:
-        for featureNumber, featureValue in number.features.items():
-            if featureValue == 1:
-                temp = weights[int(number.label)][featureNumber]
-                temp += 1
-                weights[int(number.label)].update({featureNumber: temp})
-                thing = weights[int(number.label)][featureNumber]
-
+        for weightNum, weightValue in weights[int(number.label)].items():
+            if number.features[weightNum - 1] == 1:
+                print(number.features[weightNum -1 ])
+                weights[int(number.label)][weightNum -1] += 1
+                print(weights[int(number.label)][weightNum -1])
 
     # I need to replace the values in the weights, with the weights divided by the
     # times_number_has_appeared
-    for weightNum, weightContainer in weights.items():
-        for featureNum, featureValue in weightContainer.items(): 
-            times_num_occured = times_number_has_appeared[weightNum]  
-            temp = featureValue / times_num_occured
-            weights[int(number.label)].update({featureNumber: temp})
-
-    pp = pprint.PrettyPrinter(indent=4)
-    pp.pprint(weights)
+#    for weightNum, weightContainer in weights.items():
+#        for featureNum, featureValue in weightContainer.items(): 
+#            times_num_occured = times_number_has_appeared[weightNum]  
+#            temp = featureValue / times_num_occured
+#            weights[int(number.label)].update({featureNumber: temp})
+#
+#    pp = pprint.PrettyPrinter(indent=4)
+#    pp.pprint(weights)
 
 if __name__ == "__main__":
     main()
