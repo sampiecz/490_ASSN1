@@ -12,9 +12,12 @@ class NumberContainer:
 
 
 class Number:
+    label = ""
     lines = []
     features = {}
     size = 0
+    # TODO: add label to this class
+    # TODO: calculate the probability of each feature
 
     def __str__(self):
         string_thing = ""
@@ -63,6 +66,13 @@ for line in testimages.read().split("\n"):
         number.append(line)
         count = 1
 
-numberContainer.numbers[-9].print_self()
-numberContainer.numbers[-9].generate_features()
-print(numberContainer.numbers[-9].features)
+label_counter = 0
+testlabel = open("testlabels")
+for label in testlabel:
+    numberContainer.numbers[label_counter].label = label
+    label_counter += 1
+
+numberContainer.numbers[0].print_self()
+numberContainer.numbers[0].generate_features()
+print(numberContainer.numbers[0].features)
+print(numberContainer.numbers[0].label)
