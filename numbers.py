@@ -19,7 +19,6 @@ class NumberContainer:
     def countNumbers(self):
         for number in self.numbers:
             self.timesNumberHasAppeared[int(number.label)] += 1
-        print(self.timesNumberHasAppeared)
 
 class Number:
     label = ""
@@ -77,7 +76,8 @@ class WeightContainer:
                 indexWeightNum = weightNum -1
                 timesNumOccured = numberContainer.timesNumberHasAppeared[int(weight.label)]  
                 newVal = weightVal / (2 *.1 + timesNumOccured)
-        weight.features = newWeightFeatures 
+                newWeightFeatures.update({weightNum: newVal})
+                weight.setFeatures(newWeightFeatures) 
 
     def printWeights(self):
         for weight in self.weights:
@@ -104,6 +104,10 @@ class Weight:
         pp = pprint.PrettyPrinter(indent=4)
         pp.pprint(self.features)
 
+    def setFeatures(self, features):
+        self.features = {}
+        self.features = features
+
 def main():
 
     
@@ -129,9 +133,6 @@ def main():
     for label in testlabel:
         numberContainer.numbers[labelCounter].label = label
         labelCounter += 1
-
-    # now numbers are labeled we can count occurences
-    numberContainer.countNumbers()
 
     # initialize weights and weight container
     weightContainer = WeightContainer()
