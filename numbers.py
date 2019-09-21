@@ -2,19 +2,24 @@ import pprint
 
 class NumberContainer:
     numbers = []
+    timesNumberHasAppeared = {0: 0,1: 0,2: 0,3: 0,4: 0,5: 0,6: 0,7: 0,8: 0,9: 0,}
 
     def __str__(self):
-        string_thing = ""
+        stringThing = ""
         for item in self.numbers:
-            string_thing += str(item)
-        return string_thing 
+            stringThing += str(item)
+        return stringThing 
 
-    def add_number(self, number):
+    def addNumber(self, number):
         self.numbers.append(number)
 
-    def print_size(self):
+    def printSize(self):
         print("This many images in container: " + str(len(self.numbers)))
 
+    def countNumbers(self):
+        for number in self.numbers:
+            self.timesNumberHasAppeared[int(number.label)] += 1
+        print(self.timesNumberHasAppeared)
 
 class Number:
     label = ""
@@ -24,21 +29,21 @@ class Number:
     # TODO: calculate the probability of each feature
 
     def __str__(self):
-        string_thing = ""
+        stringThing = ""
         for item in self.lines:
-            string_thing += str(item)
-        return string_thing 
+            stringThing += str(item)
+        return stringThing 
 
     def __init__(self, lines):
         self.lines = lines
 
-    def print_self(self):
+    def printSelf(self):
         for line in self.lines:
             print(line)
         print("I am: " + str(self.label))
         print("Size: " + str(len(self.features)))
 
-    def generate_features(self):
+    def generateFeatures(self):
         count = 0
         for line in self.lines:
             for character in line:
@@ -54,75 +59,108 @@ class Number:
         self.size = len(self.features) 
         return self.size
 
+class WeightContainer:
+    weights = []
+
+    def addWeight(self, weight):
+        self.weights.append(weight)
+
+    def incrementWeight(self, label, featureNum):
+        for weight in self.weights:
+            if weight.label == label:
+                weight.features[featureNum] += 1
+
+    def generateWeights(self, numberContainer):
+        for weight in self.weights:
+            newWeightFeatures = {} 
+            for weightNum, weightVal in weight.features.items(): 
+                indexWeightNum = weightNum -1
+                timesNumOccured = numberContainer.timesNumberHasAppeared[int(weight.label)]  
+                newVal = weightVal / (2 *.1 + timesNumOccured)
+        weight.features = newWeightFeatures 
+
+    def printWeights(self):
+        for weight in self.weights:
+            weight.printSelf()
+
+
+class Weight:
+    label = ""
+    features = {}
+
+    def __str__(self):
+        return self.features
+
+    def __init__(self, label):
+        self.label = str(label)
+
+        # make sure weights isn't empty -- initialize with counters and zeros
+        count = 1
+        while count != 785:
+            self.features.update({count: 0.1})
+            count += 1
+
+    def printSelf(self): 
+        pp = pprint.PrettyPrinter(indent=4)
+        pp.pprint(self.features)
+
 def main():
 
-# Instantiate vars 
-    testimages = open("testimages")
+    
+    # read those test numbers and store them
     numberContainer = NumberContainer()
     number = []
     count = 0
-
-# read those test numbers and store them
-    for line in testimages.read().split("\n"):
+    for line in open("testimages").read().split("\n"):
         if count <= 27:
             number.append(line)
             count += 1
         else:
             instance = Number(number)
-            instance.generate_features()
-            numberContainer.add_number(instance)
+            instance.generateFeatures()
+            numberContainer.addNumber(instance)
             number = []
             number.append(line)
             count = 1
 
     # do label stuff
-    label_counter = 0
+    labelCounter = 0
     testlabel = open("testlabels")
     for label in testlabel:
-        numberContainer.numbers[label_counter].label = label
-        label_counter += 1
+        numberContainer.numbers[labelCounter].label = label
+        labelCounter += 1
 
-    # weights
-    weights = {0: {},1: {},2: {},3: {},4: {},5: {},6: {},7: {},8: {},9: {},}
-    times_number_has_appeared = {0: 0,1: 0,2: 0,3: 0,4: 0,5: 0,6: 0,7: 0,8: 0,9: 0,}
+    # now numbers are labeled we can count occurences
+    numberContainer.countNumbers()
 
-    # make sure weights isn't empty -- initialize with counters and zeros
-    for weight in weights.values():
-        count = 1
-        while count != 785:
-            weight.update({count: 0})
-            count += 1
+    # initialize weights and weight container
+    weightContainer = WeightContainer()
+    for item in range(0, 9):
+        weight = Weight(item)
+        weightContainer.addWeight(weight)
 
-    # see how many times each number appears
-    for number in numberContainer.numbers:
-        times_number_has_appeared[int(number.label)] += 1
-
-
+    # generate number count
+    numberContainer.countNumbers()
+    
     # loop through numbers, then loop through their features, for each feature, if it 
     # is a 1, then we need to let weights know to increment current value at that index in weights grid
     for number in numberContainer.numbers:
-        for weightNum, weightValue in weights[int(number.label)].items():
-            if number.features[weightNum - 1] == 1:
-                print(number.features[weightNum -1 ])
-                weights[int(number.label)][weightNum -1] += 1
-                print(weights[int(number.label)][weightNum -1])
+        for featureNum, featureVal in number.features.items():
+            if featureVal == 1:
+                weightContainer.incrementWeight(number.label, featureNum)
 
     # I need to replace the values in the weights, with the weights divided by the
-    # times_number_has_appeared
-#    for weightNum, weightContainer in weights.items():
-#        for featureNum, featureValue in weightContainer.items(): 
-#            times_num_occured = times_number_has_appeared[weightNum]  
-#            temp = featureValue / times_num_occured
-#            weights[int(number.label)].update({featureNumber: temp})
-#
-#    pp = pprint.PrettyPrinter(indent=4)
-#    pp.pprint(weights)
+    # timesNumberHasAppeared
+    # timesNumberHasAppeared = {0: {},1: {},2: {},3: {},4: {},5: {},6: {},7: {},8: {},9: {},}
+    weightContainer.generateWeights(numberContainer)
+    weightContainer.printWeights()
+
+
+# check stuff with printing
+#numberContainer.numbers[0].printSelf()
+#numberContainer.numbers[0].generateFeatures()
+#print(numberContainer.numbers[0].features)
+#print(numberContainer.numbers[0].label)
 
 if __name__ == "__main__":
     main()
-
-# check stuff with printing
-#numberContainer.numbers[0].print_self()
-#numberContainer.numbers[0].generate_features()
-#print(numberContainer.numbers[0].features)
-#print(numberContainer.numbers[0].label)
